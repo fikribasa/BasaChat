@@ -5,24 +5,18 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Platform,
+  PermissionsAndroid,
+  ToastAndroid,
 } from 'react-native';
-// import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-community/async-storage';
+import Geolocation from 'react-native-geolocation-service';
+import {Database, Auth} from '../constant/config';
 
-// import {login} from '../public/redux/actions/user';
-
-import {withNavigation} from 'react-navigation';
-
-class Login extends Component {
+export default class Login extends Component {
   state = {
     email: '',
     password: '',
-
-    user: {
-      id: '',
-      name: '',
-      email: '',
-    },
-    token: '',
   };
 
   toRegister = () => {
@@ -37,66 +31,118 @@ class Login extends Component {
     this.setState(() => ({[name]: value}));
   };
 
+  hasLocationPermission = async () => {
+    if (
+      Platform.OS === 'ios' ||
+      (Platform.OS === 'android' && Platform.Version < 23)
+    ) {
+      return true;
+    }
+    const hasPermission = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+    if (hasPermission) {
+      return true;
+    }
+    const status = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+    if (status === PermissionsAndroid.RESULTS.GRANTED) {
+      return true;
+    }
+    if (status === PermissionsAndroid.RESULTS.DENIED) {
+      ToastAndroid.show(
+        'Location Permission Denied By User.',
+        ToastAndroid.LONG,
+      );
+    } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+      ToastAndroid.show(
+        'Location Permission Revoked By User.',
+        ToastAndroid.LONG,
+      );
+    }
+    return false;
+  };
+
+  getLocation = async () => {
+    const hasLocationPermission = await this.hasLocationPermission();
+
+    if (!hasLocationPermission) {
+      return;
+    }
+
+    this.setState({loading: true}, () => {
+      Geolocation.getCurrentPosition(
+        position => {
+          this.setState({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            loading: false,
+          });
+        },
+        error => {
+          this.setState({errorMessage: error});
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 8000,
+          maximumAge: 8000,
+          distanceFilter: 50,
+          forceRequestLocation: true,
+        },
+      );
+    });
+  };
+
   login = async () => {
-    // if (this.state.email !== '' && this.state.password !== '') {
-    //   await this.props.dispatch(login(this.state));
+    const {email, password} = this.state;
+    if (email.length < 6) {
+      ToastAndroid.show(
+        'Please input a valid email address',
+        ToastAndroid.LONG,
+      );
+    } else if (password.length < 6) {
+      ToastAndroid.show(
+        'Password must be at least 6 characters',
+        ToastAndroid.LONG,
+      );
+    } else {
+      Database.ref('/user')
+        .orderByChild('email')
+        .equalTo(email)
+        .once('value', result => {
+          let data = result.val();
+          if (data !== null) {
+            let user = Object.values(data);
 
-    //   if (this.props.user == null) {
-    //     alert('Wrong email or password!');
-    //   } else {
-    //     AsyncStorage.setItem('userName', this.props.user.name);
-    //     AsyncStorage.setItem('id', this.props.user.id.toString());
-    //     AsyncStorage.setItem('userEmail', this.props.user.email);
-    //     AsyncStorage.setItem('userLevel', this.props.user.level.toString());
-    //     AsyncStorage.setItem('token', this.props.token);
-
-    //     await AsyncStorage.getItem('userName').then(value => {
-    //       if (value !== null) {
-    //         this.setState({user: {...this.state.user, name: value}});
-    //       }
-    //     });
-
-    //     await AsyncStorage.getItem('id').then(value => {
-    //       if (value !== null) {
-    //         value = parseInt(value);
-    //         this.setState({user: {...this.state.user, id: value}});
-    //       }
-    //     });
-
-    //     await AsyncStorage.getItem('userEmail').then(value => {
-    //       if (value !== null) {
-    //         this.setState({user: {...this.state.user, email: value}});
-    //       }
-    //     });
-    //     await AsyncStorage.getItem('userLevel').then(value => {
-    //       if (value !== null) {
-    //         value = parseInt(value);
-    //         this.setState({user: {...this.state.user, level: value}});
-    //       }
-    //     });
-
-    //     await AsyncStorage.getItem('token').then(value => {
-    //       if (value !== null) {
-    //         this.setState({token: value});
-    //       }
-    //     });
-
-    // console.log('state', this.state);
-
-    // const header = {headers: {authorization: 'Bearer ' + this.state.token}};
-
-    // await this.props.dispatch(getWishlist(this.state.user.id, header));
-    // await this.props.dispatch(getCart(this.state.user.id, header));
-
-    // await this.props.dispatch(
-    //   getUserTransactions(this.state.user.id, header),
-    // );
-
-    this.props.navigation.navigate('Home');
-    //   }
-    // } else {
-    //   alert("Email and password can't be empty");
-    // }
+            AsyncStorage.setItem('user.email', user[0].email);
+            AsyncStorage.setItem('user.name', user[0].name);
+            AsyncStorage.setItem('user.photo', user[0].photo);
+          }
+        });
+      Auth.signInWithEmailAndPassword(email, password)
+        .then(async response => {
+          Database.ref('/user/' + response.user.uid).update({
+            status: 'Online',
+            latitude: this.state.latitude,
+            longitude: this.state.longitude,
+          });
+          // AsyncStorage.setItem('user', response.user);
+          await AsyncStorage.setItem('userid', response.user.uid);
+          await AsyncStorage.setItem('user', response.user);
+          ToastAndroid.show('Login success', ToastAndroid.LONG);
+          await this.props.navigation.navigate('MainStack');
+        })
+        .catch(error => {
+          this.setState({
+            errorMessage: error.message,
+            email: '',
+            password: '',
+          });
+          ToastAndroid.show(this.state.errorMessage, ToastAndroid.LONG);
+        });
+      // Alert.alert('Error Message', this.state.errorMessage);
+    }
   };
   _toastWithDurationGravityOffsetHandler = () => {
     //function to make Toast With Duration, Gravity And Offset
@@ -180,8 +226,6 @@ class Login extends Component {
     );
   }
 }
-
-export default withNavigation(Login);
 
 const styles = StyleSheet.create({
   container: {

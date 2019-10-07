@@ -6,7 +6,7 @@
  * @flow
  */
 
-import React from 'react';
+import React, {Component} from 'react';
 import {SafeAreaView, Button, View, Text, StatusBar} from 'react-native';
 import Router from './src/routes';
 

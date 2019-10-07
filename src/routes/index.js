@@ -1,6 +1,4 @@
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
-import {createBottomTabNavigator} from 'react-navigation-tabs';
-// import {Home, Profile, Splash, Register, } from '../pages';
 import {createStackNavigator} from 'react-navigation-stack';
 
 import {createDrawerNavigator} from 'react-navigation-drawer';
@@ -14,7 +12,7 @@ import Home from '../pages/Home';
 import MyProfile from '../pages/MyProfile';
 import Maps from '../pages/Maps';
 import Chat from '../pages/Chat';
-import Contacts from '../pages/Contacts';
+import Contact from '../pages/Contacts';
 
 const LandingStack = createStackNavigator(
   {
@@ -33,7 +31,7 @@ const LandingStack = createStackNavigator(
   },
 );
 
-class Hidden extends React.Component {
+class Hidden extends Component {
   render() {
     return null;
   }
@@ -42,7 +40,7 @@ class Hidden extends React.Component {
 const MainDrawer = createDrawerNavigator(
   {
     Home: {screen: Home},
-    Contacts: {screen: Contacts},
+    Contact: {screen: Contact},
     Maps: {
       screen: Maps,
     },
@@ -62,7 +60,7 @@ const MainDrawer = createDrawerNavigator(
     },
   },
   {
-    initialRouteName: 'Home',
+    initialRouteName: 'Maps',
     drawerPosition: 'left',
     drawerWidth: 200,
     drawerBackgroundColor: '#333333',
@@ -91,7 +89,7 @@ const MainStack = createStackNavigator(
   {
     Home: {screen: MainDrawer},
     Chat: {screen: Chat},
-    Contacts: {screen: Contacts},
+    Contact: {screen: Contact},
     Profile: {screen: Profile},
     Maps: {screen: Maps},
   },

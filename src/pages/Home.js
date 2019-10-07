@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
 import {View, Text, TouchableOpacity, FlatList, StyleSheet} from 'react-native';
 import Header from '../layouts/Header';

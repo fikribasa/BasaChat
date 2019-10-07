@@ -6,26 +6,98 @@ import {
   Text,
   StyleSheet,
   TextInput,
+  Platform,
   TouchableOpacity,
+  PermissionsAndroid,
+  ToastAndroid,
 } from 'react-native';
 
-import {withNavigation} from 'react-navigation';
-// import {register} from '../public/redux/actions/user';
-// import {connect} from 'react-redux';
+import {Database, Auth} from '../constant/config';
+import Geolocation from 'react-native-geolocation-service';
 
 class Register extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       isVisible: false,
+      name: '',
+      email: '',
+      password: '',
+      latitude: null,
+      longitude: null,
+      errorMessage: null,
+      loading: false,
+      updatesEnabled: false,
     };
   }
 
-  state = {
-    name: '',
-    email: '',
-    password: '',
-    register: {},
+  componentDidMount = async () => {
+    await this.getLocation();
+  };
+
+  hasLocationPermission = async () => {
+    if (
+      Platform.OS === 'ios' ||
+      (Platform.OS === 'android' && Platform.Version < 23)
+    ) {
+      return true;
+    }
+    const hasPermission = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+    if (hasPermission) {
+      return true;
+    }
+    const status = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+    if (status === PermissionsAndroid.RESULTS.GRANTED) {
+      return true;
+    }
+    if (status === PermissionsAndroid.RESULTS.DENIED) {
+      ToastAndroid.show(
+        'Location Permission Denied By User.',
+        ToastAndroid.LONG,
+      );
+    } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+      ToastAndroid.show(
+        'Location Permission Revoked By User.',
+        ToastAndroid.LONG,
+      );
+    }
+    return false;
+  };
+
+  getLocation = async () => {
+    const hasLocationPermission = await this.hasLocationPermission();
+
+    if (!hasLocationPermission) {
+      return;
+    }
+
+    this.setState({loading: true}, () => {
+      Geolocation.getCurrentPosition(
+        position => {
+          this.setState({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            loading: false,
+          });
+          console.warn(position);
+        },
+        error => {
+          this.setState({errorMessage: error, loading: false});
+          console.warn(error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 8000,
+          maximumAge: 8000,
+          distanceFilter: 50,
+          forceRequestLocation: true,
+        },
+      );
+    });
   };
 
   toLogin = () => {
@@ -35,25 +107,61 @@ class Register extends Component {
   inputHandler = (name, value) => {
     this.setState(() => ({[name]: value}));
   };
-
-  register = async () => {
-    const data = {
-      name: this.state.name,
-      email: this.state.email,
-      password: this.state.password,
-    };
-
-    // await this.props.dispatch(register(data));
-    // this.setState({register: this.props.register});
-
-    if (this.state.register.error) {
-      alert(this.state.register.error);
+  submitForm = () => {
+    const {email, name, password} = this.state;
+    if (name.length < 1) {
+      ToastAndroid.show('Please input your fullname', ToastAndroid.LONG);
+    } else if (email.length < 6) {
+      ToastAndroid.show(
+        'Please input a valid email address',
+        ToastAndroid.LONG,
+      );
+    } else if (password.length < 6) {
+      ToastAndroid.show(
+        'Password must be at least 6 characters',
+        ToastAndroid.LONG,
+      );
     } else {
-      alert('Register success. \n Welcome to Aneka Music');
-      this.props.navigation.navigate('Home');
+      Auth.createUserWithEmailAndPassword(email, password)
+        .then(response => {
+          console.warn(response);
+          Database.ref('/user/' + response.user.uid)
+            .set({
+              name: this.state.name,
+              status: 'Offline',
+              email: this.state.email,
+              photo: 'https://i.imgur.com/1KoMPoK.png',
+              latitude: this.state.latitude,
+              longitude: this.state.longitude,
+              id: response.user.uid,
+            })
+            .catch(error => {
+              ToastAndroid.show(error.message, ToastAndroid.LONG);
+              this.setState({
+                name: '',
+                email: '',
+                password: '',
+              });
+            });
+          ToastAndroid.show(
+            'Your account is successfully registered!',
+            ToastAndroid.LONG,
+          );
+
+          setInterval(() => this.props.navigation.navigate('Login'), 2000);
+        })
+        .catch(error => {
+          this.setState({
+            errorMessage: error.message,
+            name: '',
+            email: '',
+            password: '',
+          });
+          ToastAndroid.show(this.state.errorMessage.message, ToastAndroid.LONG);
+        });
+      // Alert.alert('Error Message', this.state.errorMessage);
     }
   };
-
   render() {
     return (
       <ScrollView style={styles.container}>
@@ -80,13 +188,14 @@ class Register extends Component {
             onChangeText={txt => this.inputHandler('email', txt)}
           />
           <TextInput
+            secureTextEntry
             placeholder="Password"
             style={styles.textInput}
             placeholderTextColor="black"
             onChangeText={txt => this.inputHandler('password', txt)}
           />
         </View>
-        <TouchableOpacity style={styles.signInBtn} onPress={this.register}>
+        <TouchableOpacity style={styles.signInBtn} onPress={this.submitForm}>
           <Text
             style={{
               fontSize: 20,

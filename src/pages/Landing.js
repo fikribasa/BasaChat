@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
 import {
   View,
@@ -11,58 +11,66 @@ import {
 } from 'react-native';
 import Header from '../layouts/Header';
 
-const Landing = props => {
-  return (
-    <SafeAreaView style={{flex: 1}}>
-      <StatusBar translucent backgroundColor="transparent" />
-      <ImageBackground
-        source={require('../assets/backgrund/splash-bg.jpg')}
-        style={{resizeMode: 'cover', height: '100%', width: '100%'}}>
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            alignContent: 'center',
-            flex: 1,
-          }}>
-          <Image
-            source={require('../assets/icon/iconchat.png')}
-            style={{width: '60%', height: '60%', resizeMode: 'contain'}}
-          />
-        </View>
-        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-          <TouchableOpacity
-            onPress={() => props.navigation.navigate('Login')}
-            style={styles.signUpBtn}>
-            <Text
-              style={{
-                fontSize: 18,
-                textAlign: 'center',
-                color: '#091B37',
-              }}>
-              Login
-            </Text>
-          </TouchableOpacity>
+export default class Landing {
+  handleLogin = () => {
+    this.props.navigation.navigate('Login');
+  };
+  handleRegister = () => {
+    this.props.navigation.navigate('Register');
+  };
 
-          <TouchableOpacity
-            onPress={() => props.navigation.navigate('Register')}
-            style={styles.signUpBtn}>
-            <Text
-              style={{
-                fontSize: 18,
-                textAlign: 'center',
-                color: '#091B37',
-              }}>
-              Register
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </ImageBackground>
-    </SafeAreaView>
-  );
-};
+  render() {
+    return (
+      <SafeAreaView style={{flex: 1}}>
+        <StatusBar translucent backgroundColor="transparent" />
+        <ImageBackground
+          source={require('../assets/backgrund/splash-bg.jpg')}
+          style={{resizeMode: 'cover', height: '100%', width: '100%'}}>
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              alignContent: 'center',
+              flex: 1,
+            }}>
+            <Image
+              source={require('../assets/icon/iconchat.png')}
+              style={{width: '60%', height: '60%', resizeMode: 'contain'}}
+            />
+          </View>
+          <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+            <TouchableOpacity
+              onPress={this.handleLogin}
+              style={styles.signUpBtn}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  textAlign: 'center',
+                  color: '#091B37',
+                }}>
+                Login
+              </Text>
+            </TouchableOpacity>
 
-export default Landing;
+            <TouchableOpacity
+              onPress={this.handleRegister}
+              style={styles.signUpBtn}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  textAlign: 'center',
+                  color: '#091B37',
+                }}>
+                Register
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ImageBackground>
+      </SafeAreaView>
+    );
+  }
+}
+
 const styles = StyleSheet.create({
   signUpBtn: {
     width: '30%',
