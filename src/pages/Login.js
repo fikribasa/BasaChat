@@ -29,6 +29,10 @@ class Login extends Component {
     this.props.navigation.navigate('Register');
   };
 
+  runaway = () => {
+    this.props.navigation.navigate('MainStack');
+  };
+
   inputHandler = (name, value) => {
     this.setState(() => ({[name]: value}));
   };
@@ -156,6 +160,20 @@ class Login extends Component {
               color: '#091B37',
             }}>
             SIGN UP
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.signUpBtn}
+          onPress={() => this.props.navigation.navigate('MainStack')}>
+          <Text
+            style={{
+              fontSize: 20,
+              textAlign: 'center',
+              fontWeight: 'bold',
+              color: '#091B37',
+            }}>
+            Ruun
           </Text>
         </TouchableOpacity>
       </View>

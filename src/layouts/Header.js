@@ -3,6 +3,7 @@ import {TouchableOpacity, StatusBar, Text, Image, View} from 'react-native';
 import {withNavigation} from 'react-navigation';
 import SafeAreaView from 'react-native-safe-area-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Hamburger from '../assets/icon/menu-24px.svg';
 
 const Header = props => {
   return (
@@ -18,7 +19,7 @@ const Header = props => {
       <TouchableOpacity
         onPress={() => props.navigation.openDrawer()}
         style={{paddingHorizontal: 30}}>
-        <Icon name="arrow-right" size={15} color="white" />
+        <Hamburger width={40} height={40} color={'white'} />
       </TouchableOpacity>
       <View
         style={{

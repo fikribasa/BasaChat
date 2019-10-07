@@ -9,7 +9,7 @@ import Landing from '../pages/Landing';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 import Splash from '../pages/Splash';
-import Profile from '../pages/Profile';
+import Profile from '../pages/FriendProfile';
 import Home from '../pages/Home';
 import MyProfile from '../pages/MyProfile';
 import Maps from '../pages/Maps';
@@ -43,6 +43,9 @@ const MainDrawer = createDrawerNavigator(
   {
     Home: {screen: Home},
     Contacts: {screen: Contacts},
+    Maps: {
+      screen: Maps,
+    },
     MyProfile: {screen: MyProfile},
     Profile: {
       screen: Profile,
@@ -50,12 +53,7 @@ const MainDrawer = createDrawerNavigator(
         drawerLabel: <Hidden />,
       },
     },
-    Maps: {
-      screen: Maps,
-      navigationOptions: {
-        drawerLabel: <Hidden />,
-      },
-    },
+
     Chat: {
       screen: Chat,
       navigationOptions: {

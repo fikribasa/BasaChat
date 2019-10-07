@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "39799028396",
+    "firebase_url": "https://basa-chat.firebaseio.com",
+    "project_id": "basa-chat",
+    "storage_bucket": "basa-chat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:39799028396:android:734c4e6410eb5ab28ffd09",
+        "android_client_info": {
+          "package_name": "com.basa.basachat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "39799028396-04rt0m4rfv75smnf0ulk8osvdt0ub631.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCe_Ut1rWbKAHWdmLSpg8_1WhuYFo2NZIc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "39799028396-04rt0m4rfv75smnf0ulk8osvdt0ub631.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

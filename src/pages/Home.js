@@ -1,8 +1,29 @@
 import React from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, FlatList, StyleSheet} from 'react-native';
 import Header from '../layouts/Header';
 import {withNavigation} from 'react-navigation';
+
+const USAGE = [
+  {
+    id: '1',
+    date: '28 Sep 2019 16:02:06',
+    type: 'Usage',
+    price: 50,
+  },
+  {
+    id: '2',
+    date: '27 Sep 2019 16:02:06',
+    type: 'Usage',
+    price: 50,
+  },
+  {
+    id: '3',
+    date: '25 Sep 2019 16:02:06',
+    type: 'Usage',
+    price: 25,
+  },
+];
 
 const Home = props => {
   return (
