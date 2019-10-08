@@ -15,8 +15,11 @@ import Header from '../layouts/Header';
 import {Database} from '../constant/config';
 
 export default class Contact extends Component {
+  constructor(props) {
+    super(props);
+  }
   static navigationOptions = {
-    title: 'Contact',
+    header: null,
   };
   state = {
     userList: [],
@@ -73,7 +76,7 @@ export default class Contact extends Component {
   render() {
     return (
       <SafeAreaView>
-        <Header />
+        <Header navigation={this.props.navigation} />
         {this.state.refreshing === true ? (
           <ActivityIndicator
             size="large"

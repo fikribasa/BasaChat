@@ -16,7 +16,7 @@ import {Database, Auth} from '../constant/config';
 
 export default class MyProfile extends Component {
   static navigationOptions = {
-    title: "User's Profile",
+    title: ' Profile',
   };
   state = {
     errorMessage: null,
@@ -35,6 +35,7 @@ export default class MyProfile extends Component {
 
   handleLogout = async () => {
     const userId = await AsyncStorage.getItem('userid');
+
     Auth.signOut()
       .then(async () => {
         Database.ref('/user/' + userId).update({
@@ -42,9 +43,10 @@ export default class MyProfile extends Component {
         });
         await AsyncStorage.clear();
         ToastAndroid.show('Logout success', ToastAndroid.LONG);
-        await this.props.navigation.navigate('Home');
+        this.props.rootNavigation.navigation.navigate('Splash');
       })
       .catch(error => this.setState({errorMessage: error.message}));
+    // Alert.alert('Error Message', this.state.errorMessage);
   };
 
   render() {
@@ -60,12 +62,7 @@ export default class MyProfile extends Component {
             />
             <Text style={styles.name}>{this.state.userName}</Text>
             <Text style={styles.email}>{this.state.userEmail}</Text>
-            <Text style={styles.description}>
-              Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean
-              commodo ligula eget dolor. Aenean massa. Cum sociis natoque
-              penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-              Donec quam felis, ultricies nec
-            </Text>
+            <Text style={styles.description}>User Description</Text>
           </View>
           <View style={styles.separator}></View>
           <View style={styles.logoutContainer}>

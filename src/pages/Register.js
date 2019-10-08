@@ -226,7 +226,7 @@ export default Register;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5d372',
+    backgroundColor: '#f48023',
   },
   textInput: {
     width: '80%',

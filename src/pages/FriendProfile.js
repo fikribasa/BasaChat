@@ -23,9 +23,12 @@ export default class Profile extends Component {
       title: navigation.getParam('item').name + "'s Profile",
     };
   };
-  state = {
-    person: this.props.navigation.getParam('item'),
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      person: props.navigation.getParam('item'),
+    };
+  }
 
   componentDidMount = async () => {
     const userId = await AsyncStorage.getItem('userid');
@@ -45,18 +48,13 @@ export default class Profile extends Component {
               <Image
                 style={styles.avatarImg}
                 source={{
-                  uri: this.state.person.photo,
+                  uri: this.state.userAvatar,
                 }}
               />
               <Text style={styles.name}>{this.state.person.name}</Text>
               <Text style={styles.email}>{this.state.person.status}</Text>
               <Text style={styles.email}>{this.state.person.email}</Text>
-              <Text style={styles.description}>
-                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean
-                commodo ligula eget dolor. Aenean massa. Cum sociis natoque
-                penatibus et magnis dis parturient montes, nascetur ridiculus
-                mus. Donec quam felis, ultricies nec
-              </Text>
+              <Text style={styles.description}>User Profile Description</Text>
             </View>
             <View style={styles.separator}></View>
             <View style={styles.logoutContainer}>

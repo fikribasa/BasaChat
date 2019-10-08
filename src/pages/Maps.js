@@ -9,12 +9,13 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import torage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-community/async-storage';
 import MapView, {Marker} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import styles from '../constant/styles';
 import {Database} from '../constant/config';
 import SafeAreaView from 'react-native-safe-area-view';
+import Header from '../layouts/Header';
 
 const {width, height} = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -22,19 +23,18 @@ const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 export default class Maps extends Component {
-  static navigationOptions = {
-    header: null,
-  };
+  constructor(props) {
+    super(props);
 
-  state = {
-    initial: 'state',
-    mapRegion: null,
-    latitude: 0,
-    longitude: 0,
-    userList: [],
-    uid: null,
-  };
-
+    state = {
+      initial: 'state',
+      mapRegion: null,
+      latitude: 0,
+      longitude: 0,
+      userList: [],
+      uid: null,
+    };
+  }
   componentDidMount = async () => {
     await this.getUser();
     await this.getLocation();
@@ -129,13 +129,19 @@ export default class Maps extends Component {
     });
   };
 
+  componentWillUnmount() {
+    Geolocation.clearWatch(this.watchID);
+    Geolocation.stopObserving();
+  }
+
   render() {
     // console.warn(this.state.userList);
     return (
       <SafeAreaView style={{flex: 1}}>
+        <Header />
         <View style={[styles.container, {justifyContent: 'flex-start'}]}>
           <MapView
-            style={{width: '100%', height: '95%'}}
+            style={{width: '100%', height: '80%'}}
             showsMyLocationButton={true}
             showsIndoorLevelPicker={true}
             showsUserLocation={true}
@@ -162,7 +168,7 @@ export default class Maps extends Component {
                     longitude: item.longitude || 0,
                   }}
                   onCalloutPress={() => {
-                    this.props.navigation.navigate('FriendProfile', {
+                    this.props.navigation.navigate('Chat', {
                       item,
                     });
                   }}>
@@ -181,7 +187,7 @@ export default class Maps extends Component {
             <TouchableOpacity>
               <Text
                 style={styles.buttonText}
-                onPress={() => this.props.navigation.navigate('FriendList')}>
+                onPress={() => this.props.navigation.navigate('Contact')}>
                 FriendList
               </Text>
             </TouchableOpacity>

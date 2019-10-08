@@ -14,9 +14,19 @@ import Geolocation from 'react-native-geolocation-service';
 import {Database, Auth} from '../constant/config';
 
 export default class Login extends Component {
-  state = {
-    email: '',
-    password: '',
+  static navigationOptions = {
+    header: null,
+  };
+  constructor(props) {
+    super(props);
+
+    state = {
+      email: '',
+      password: '',
+    };
+  }
+  componentDidMount = async () => {
+    await this.getLocation();
   };
 
   toRegister = () => {
@@ -24,7 +34,7 @@ export default class Login extends Component {
   };
 
   runaway = () => {
-    this.props.navigation.navigate('MainStack');
+    this.props.navigation.navigate('Home');
   };
 
   inputHandler = (name, value) => {
@@ -94,7 +104,11 @@ export default class Login extends Component {
     });
   };
 
-  login = async () => {
+  handleChange = key => val => {
+    this.setState({[key]: val});
+  };
+
+  submitForm = async () => {
     const {email, password} = this.state;
     if (email.length < 6) {
       ToastAndroid.show(
@@ -124,14 +138,14 @@ export default class Login extends Component {
         .then(async response => {
           Database.ref('/user/' + response.user.uid).update({
             status: 'Online',
-            latitude: this.state.latitude,
-            longitude: this.state.longitude,
+            latitude: this.state.latitude || null,
+            longitude: this.state.longitude || null,
           });
           // AsyncStorage.setItem('user', response.user);
           await AsyncStorage.setItem('userid', response.user.uid);
           await AsyncStorage.setItem('user', response.user);
           ToastAndroid.show('Login success', ToastAndroid.LONG);
-          await this.props.navigation.navigate('MainStack');
+          this.props.navigation.navigate('Home');
         })
         .catch(error => {
           this.setState({
@@ -173,7 +187,7 @@ export default class Login extends Component {
             placeholder="Email"
             style={styles.textInput}
             placeholderTextColor="grey"
-            onChangeText={txt => this.inputHandler('email', txt)}
+            onChangeText={this.handleChange('email')}
           />
           <TextInput
             name="password"
@@ -181,10 +195,10 @@ export default class Login extends Component {
             style={styles.textInput}
             secureTextEntry={true}
             placeholderTextColor="grey"
-            onChangeText={txt => this.inputHandler('password', txt)}
+            onChangeText={this.handleChange('password')}
           />
         </View>
-        <TouchableOpacity style={styles.signInBtn} onPress={this.login}>
+        <TouchableOpacity style={styles.signInBtn} onPress={this.submitForm}>
           <Text
             style={{
               fontSize: 20,
@@ -211,7 +225,7 @@ export default class Login extends Component {
 
         <TouchableOpacity
           style={styles.signUpBtn}
-          onPress={() => this.props.navigation.navigate('MainStack')}>
+          onPress={() => this.props.navigation.navigate('App')}>
           <Text
             style={{
               fontSize: 20,
@@ -231,7 +245,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#f5d372',
+    backgroundColor: '#f48023',
   },
   textInput: {
     width: '80%',

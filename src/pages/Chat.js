@@ -12,6 +12,13 @@ export default class Chat extends Component {
   static navigationOptions = ({navigation}) => {
     return {
       title: navigation.getParam('item').name,
+      headerStyle: {
+        backgroundColor: '#f48023',
+        height: 100,
+      },
+      headerTitleStyle: {
+        color: 'white',
+      },
     };
   };
   state = {
@@ -84,8 +91,7 @@ export default class Chat extends Component {
   };
   render() {
     return (
-      <View style={{flex: 1}}>
-        <Header />
+      <View style={{flex: 1, backgroundColor: '#FFCCBC'}}>
         <GiftedChat
           text={this.state.message}
           onInputTextChanged={val => {

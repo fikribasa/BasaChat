@@ -12,6 +12,10 @@ import {Auth} from '../constant/config';
 import firebase from 'firebase';
 
 class Splash extends Component {
+  static navigationOptions = {
+    header: null,
+  };
+
   componentDidMount = async () => {
     let firebaseConfig = {
       apiKey: 'AIzaSyCm5gJORap8XfQDGalEC58xNUi2PTkP5io',
@@ -29,8 +33,7 @@ class Splash extends Component {
     }
     await Auth.onAuthStateChanged(user => {
       setInterval(
-        () =>
-          this.props.navigation.navigate(user ? 'MainStack' : 'LandingStack'),
+        () => this.props.navigation.navigate(user ? 'App' : 'Auth'),
         1000,
       );
     });

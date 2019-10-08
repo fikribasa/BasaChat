@@ -11,7 +11,11 @@ import {
 } from 'react-native';
 import Header from '../layouts/Header';
 
-export default class Landing {
+export default class Landing extends Component {
+  static navigationOptions = {
+    header: null,
+  };
+
   handleLogin = () => {
     this.props.navigation.navigate('Login');
   };
