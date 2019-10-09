@@ -145,7 +145,7 @@ export default class Login extends Component {
           await AsyncStorage.setItem('userid', response.user.uid);
           await AsyncStorage.setItem('user', response.user);
           ToastAndroid.show('Login success', ToastAndroid.LONG);
-          this.props.navigation.navigate('Home');
+          this.props.navigation.navigate('App');
         })
         .catch(error => {
           this.setState({
@@ -225,7 +225,7 @@ export default class Login extends Component {
 
         <TouchableOpacity
           style={styles.signUpBtn}
-          onPress={() => this.props.navigation.navigate('App')}>
+          onPress={() => this.props.navigation.navigate('Profile')}>
           <Text
             style={{
               fontSize: 20,

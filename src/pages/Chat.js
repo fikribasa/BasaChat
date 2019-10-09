@@ -21,14 +21,17 @@ export default class Chat extends Component {
       },
     };
   };
-  state = {
-    message: '',
-    messageList: [],
-    person: this.props.navigation.getParam('item'),
-    userId: AsyncStorage.getItem('userid'),
-    userName: AsyncStorage.getItem('user.name'),
-    userAvatar: AsyncStorage.getItem('user.phpto'),
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      message: '',
+      messageList: [],
+      person: this.props.navigation.getParam('item'),
+      userId: AsyncStorage.getItem('userid'),
+      userName: AsyncStorage.getItem('user.name'),
+      userAvatar: AsyncStorage.getItem('user.phpto'),
+    };
+  }
 
   onSend = async () => {
     if (this.state.message.length > 0) {
