@@ -4,13 +4,13 @@ import {
   View,
   Text,
   TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
   StyleSheet,
   Image,
-  ScrollView,
   ToastAndroid,
   Button,
-  ImageBackground,
-  StatusBar,
+  ScrollView,
 } from 'react-native';
 import Header from '../layouts/Header';
 import firebase from 'firebase';
@@ -18,11 +18,11 @@ import {Database, Auth} from '../constant/config';
 import AsyncStorage from '@react-native-community/async-storage';
 
 export default class Profile extends Component {
-  // static navigationOptions = ({navigation}) => {
-  //   return {
-  //     title: navigation.getParam('item').name + "'s Profile",
-  //   };
-  // };
+  static navigationOptions = ({navigation}) => {
+    return {
+      title: navigation.getParam('item').name + "'s Profile",
+    };
+  };
   constructor(props) {
     super(props);
     this.state = {
@@ -39,67 +39,39 @@ export default class Profile extends Component {
   };
 
   render() {
-    const item = this.state.person;
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView>
         <Header />
-        <StatusBar translucent backgroundColor="transparent" />
-        <ScrollView>
-          <View
-            style={{
-              alignItems: 'center',
-              paddingTop: 60,
-              flex: 1,
-              flexDirection: 'column',
-              backgroundColor: '#f48023',
-              height: 200,
-              justifyContent: 'flex-end',
-            }}>
-            <ImageBackground
-              resizeMode="contain"
-              style={{
-                flexDirection: 'row',
-                width: '100%',
-                height: '100%',
-                alignItems: 'flex-end',
-                paddingLeft: 20,
-              }}
-              source={{
-                uri: this.state.person.photo,
-              }}></ImageBackground>
-          </View>
-          <View style={{marginHorizontal: 20}}>
-            <Text style={{color: '#f48023', marginVertical: 10, fontSize: 22}}>
-              Info
-            </Text>
-            <Text style={{fontSize: 18}}>{this.state.person.name}</Text>
-            <Text style={{fontSize: 12, color: '#99A3A4'}}>Username</Text>
-            <View style={styles.separator}></View>
-            <Text style={{fontSize: 18}}>{this.state.person.email}</Text>
-            <Text style={{fontSize: 12, color: '#99A3A4'}}>Email</Text>
-            <View style={styles.separator}></View>
-            <Text style={{fontSize: 18}}>Bio</Text>
-            <Text style={{fontSize: 12, color: '#99A3A4'}}>
-              Add a few words about yourself
-            </Text>
-          </View>
-          <View style={styles.bigseparator}></View>
-          <View style={{marginHorizontal: 20}}>
-            <Text style={{color: '#f48023', marginVertical: 10, fontSize: 22}}>
-              History
-            </Text>
-            <TouchableOpacity
-              style={{flexDirection: 'row'}}
-              onPress={() => props.navigation.navigate('Chat', {item})}>
+        <View style={styles.container}>
+          <ScrollView>
+            <View style={{alignItems: 'center', marginHorizontal: 30}}>
               <Image
-                style={{width: 25, height: 25}}
-                source={require('../assets/icon/logout.png')}
+                style={styles.avatarImg}
+                source={{
+                  uri: this.state.userAvatar,
+                }}
               />
-              <Text style={{fontSize: 18, marginLeft: 20}}>Chat Now</Text>
-            </TouchableOpacity>
+              <Text style={styles.name}>{this.state.person.name}</Text>
+              <Text style={styles.email}>{this.state.person.status}</Text>
+              <Text style={styles.email}>{this.state.person.email}</Text>
+              <Text style={styles.description}>User Profile Description</Text>
+            </View>
             <View style={styles.separator}></View>
-          </View>
-        </ScrollView>
+            <View style={styles.logoutContainer}>
+              <TouchableOpacity
+                style={styles.logoutButton}
+                onPress={() =>
+                  this.props.navigation.navigate('Chat', {
+                    item: this.state.person,
+                  })
+                }>
+                <Text style={styles.logoutButtonText}>
+                  Chat with {this.state.person.name}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </View>
       </SafeAreaView>
     );
   }
@@ -108,18 +80,33 @@ export default class Profile extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: 20,
   },
-
+  avatarImg: {
+    width: 200,
+    height: 200,
+  },
+  name: {
+    fontSize: 28,
+    color: '#696969',
+    fontWeight: 'bold',
+  },
+  email: {
+    marginTop: 10,
+    fontSize: 18,
+    color: 'green',
+    fontWeight: 'bold',
+  },
+  description: {
+    textAlign: 'center',
+    marginTop: 10,
+    color: '#696969',
+  },
   separator: {
     height: 2,
     backgroundColor: '#eeeeee',
-    marginTop: 10,
-    marginHorizontal: 10,
-  },
-  bigseparator: {
-    height: 10,
-    backgroundColor: '#eeeeee',
-    marginTop: 10,
+    marginTop: 20,
+    marginHorizontal: 30,
   },
   logoutButton: {
     marginTop: 10,

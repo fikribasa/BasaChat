@@ -31,9 +31,12 @@ class Splash extends Component {
       // Initialize Firebase
       firebase.initializeApp(firebaseConfig);
     }
-    await Auth.onAuthStateChanged(user =>
-      this.props.navigation.navigate(user ? 'App' : 'Landing'),
-    );
+    await Auth.onAuthStateChanged(user => {
+      setInterval(
+        () => this.props.navigation.navigate(user ? 'App' : 'Auth'),
+        1000,
+      );
+    });
   };
   render() {
     return (

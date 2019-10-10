@@ -6,7 +6,7 @@ import {
   DrawerNavigatorItems,
 } from 'react-navigation-drawer';
 import React, {Component} from 'react';
-import {StyleSheet, View, Text, Image, StatusBar} from 'react-native';
+import {StyleSheet, View, Text, Image} from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 import Landing from '../pages/Landing';
 import Login from '../pages/Login';
@@ -94,7 +94,6 @@ import Contact from '../pages/Contacts';
 const DrawerContent = props => {
   return (
     <SafeAreaView forceInset={{top: 'always', horizontal: 'never'}}>
-      <StatusBar translucent backgroundColor="transparent" />
       <View
         style={{
           flexDirection: 'row',
@@ -127,49 +126,34 @@ const AppStack = createStackNavigator(
   {},
 );
 
-const ChatStack = createStackNavigator(
+const ChatStack = createStackNavigator({
+  Friend: Contact,
+  Chat: Chat,
+});
+const HomeBottom = createDrawerNavigator(
   {
-    Friend: Contact,
-    FriendProfile: Profile,
-    Chat: Chat,
-  },
-  {
-    defaultNavigationOptions: {
-      header: null,
-    },
-  },
-);
-const DrawerStack = createDrawerNavigator(
-  {
-    ListChat: {
-      screen: ChatStack,
-      navigationOptions: {
-        drawerLabel: 'Chat',
-      },
-    },
     Home: {
       screen: AppStack,
       navigationOptions: {
-        drawerLabel: 'Find Friends',
+        tabBarLabel: 'Home',
       },
     },
-
+    ListChat: {
+      screen: ChatStack,
+      navigationOptions: {
+        tabBarLabel: 'Chat',
+      },
+    },
     Profile: {
       screen: MyProfile,
       navigationOptions: {
-        drawerLabel: 'Setting',
+        tabBarLabel: 'Profile',
       },
     },
-    // FriendProfile: {
-    //   screen: Profile,
-    //   navigationOptions: {
-    //     drawerLabel: <Hidden />,
-    //   },
-    // },
   },
   {
     contentComponent: DrawerContent,
-    initialRouteName: 'ListChat',
+
     tabBarOptions: {
       activeTintColor: '#5ba4e5',
       inactiveTintColor: 'grey',
@@ -185,26 +169,30 @@ const DrawerStack = createDrawerNavigator(
     },
   },
 );
-const AuthStack = createStackNavigator(
-  {
-    Login: {
-      screen: Login,
-      navigationOptions: ({navigation}) => ({header: null}),
-    },
-    Register: {
-      screen: Register,
-      navigationOptions: ({navigation}) => ({header: null}),
-    },
+const AuthStack = createStackNavigator({
+  Landing: {screen: Landing},
+  Login: {
+    screen: Login,
+    navigationOptions: ({navigation}) => ({header: null}),
   },
-  {
-    initialRouteName: 'Login',
+  Register: {
+    screen: Register,
+    navigationOptions: ({navigation}) => ({header: null}),
   },
-);
+  Home: {
+    screen: HomeBottom,
+  },
+});
 
 const AppRoot = createAppContainer(
   createSwitchNavigator(
-    {Splash: Splash, Landing: Landing, App: DrawerStack, Auth: AuthStack},
     {
+      Splash: Splash,
+      Auth: AuthStack,
+      App: HomeBottom,
+    },
+    {
+      initialRouteName: 'Splash',
       headerMode: 'none',
     },
   ),
