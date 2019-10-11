@@ -10,6 +10,8 @@ import {
   TouchableOpacity,
   PermissionsAndroid,
   ToastAndroid,
+  ImageBackground,
+  SafeAreaView,
 } from 'react-native';
 
 import {Database, Auth} from '../constant/config';
@@ -148,7 +150,7 @@ class Register extends Component {
             ToastAndroid.LONG,
           );
 
-          setInterval(() => this.props.navigation.navigate('Login'), 2000);
+          this.props.navigation.navigate('Login');
         })
         .catch(error => {
           this.setState({
@@ -164,60 +166,70 @@ class Register extends Component {
   };
   render() {
     return (
-      <ScrollView style={styles.container}>
-        <Text
+      <SafeAreaView style={styles.container}>
+        <ImageBackground
+          source={require('../assets/backgrund/landing.jpg')}
           style={{
-            fontSize: 30,
-            textAlign: 'center',
-            color: '#091B37',
-            marginVertical: 30,
+            resizeMode: 'container',
+            height: '100%',
+            width: '100%',
+            flex: 1,
           }}>
-          SIGN UP
-        </Text>
-        <View style={{alignItems: 'center'}}>
-          <TextInput
-            placeholder="Name"
-            style={styles.textInput}
-            placeholderTextColor="black"
-            onChangeText={txt => this.inputHandler('name', txt)}
-          />
-          <TextInput
-            placeholder="Email"
-            style={styles.textInput}
-            placeholderTextColor="black"
-            onChangeText={txt => this.inputHandler('email', txt)}
-          />
-          <TextInput
-            secureTextEntry
-            placeholder="Password"
-            style={styles.textInput}
-            placeholderTextColor="black"
-            onChangeText={txt => this.inputHandler('password', txt)}
-          />
-        </View>
-        <TouchableOpacity style={styles.signInBtn} onPress={this.submitForm}>
           <Text
             style={{
-              fontSize: 20,
+              fontSize: 30,
               textAlign: 'center',
-              fontWeight: 'bold',
               color: 'white',
+              marginTop: 100,
+              marginBottom: 30,
             }}>
             SIGN UP
           </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.signUpBtn} onPress={this.toLogin}>
-          <Text
-            style={{
-              fontSize: 20,
-              textAlign: 'center',
-              fontWeight: 'bold',
-              color: '#091B37',
-            }}>
-            SIGN IN
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
+          <View style={{alignItems: 'center'}}>
+            <TextInput
+              placeholder="Name"
+              style={styles.textInput}
+              placeholderTextColor="black"
+              onChangeText={txt => this.inputHandler('name', txt)}
+            />
+            <TextInput
+              placeholder="Email"
+              style={styles.textInput}
+              placeholderTextColor="black"
+              onChangeText={txt => this.inputHandler('email', txt)}
+            />
+            <TextInput
+              secureTextEntry
+              placeholder="Password"
+              style={styles.textInput}
+              placeholderTextColor="black"
+              onChangeText={txt => this.inputHandler('password', txt)}
+            />
+          </View>
+          <TouchableOpacity style={styles.signInBtn} onPress={this.submitForm}>
+            <Text
+              style={{
+                fontSize: 20,
+                textAlign: 'center',
+                fontWeight: 'bold',
+                color: 'white',
+              }}>
+              SIGN UP
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.signUpBtn} onPress={this.toLogin}>
+            <Text
+              style={{
+                fontSize: 20,
+                textAlign: 'center',
+                fontWeight: 'bold',
+                color: '#091B37',
+              }}>
+              SIGN IN
+            </Text>
+          </TouchableOpacity>
+        </ImageBackground>
+      </SafeAreaView>
     );
   }
 }
@@ -226,7 +238,6 @@ export default Register;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f48023',
   },
   textInput: {
     width: '80%',

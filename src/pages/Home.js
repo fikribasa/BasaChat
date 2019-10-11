@@ -172,7 +172,7 @@ export default class HomeScreen extends Component {
                     longitude: item.longitude || 0,
                   }}
                   onCalloutPress={() => {
-                    this.props.navigation.navigate('Profile', {
+                    this.props.navigation.navigate('FriendProfile', {
                       item,
                     });
                   }}>
@@ -191,22 +191,8 @@ export default class HomeScreen extends Component {
             <TouchableOpacity>
               <Text
                 style={styles.buttonText}
-                onPress={() => this.props.navigation.navigate('Contact')}>
-                FriendList
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text
-                style={styles.buttonText}
                 onPress={() => this.getLocation()}>
-                Current Location
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text
-                style={styles.buttonText}
-                onPress={() => this.props.navigation.navigate('Profile')}>
-                Profile
+                Get Current Location
               </Text>
             </TouchableOpacity>
           </View>

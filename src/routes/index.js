@@ -1,6 +1,5 @@
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
-import {createBottomTabNavigator} from 'react-navigation-tabs';
 import {
   createDrawerNavigator,
   DrawerNavigatorItems,
@@ -15,81 +14,8 @@ import Splash from '../pages/Splash';
 import Profile from '../pages/FriendProfile';
 import Home from '../pages/Home';
 import MyProfile from '../pages/MyProfile';
-import Maps from '../pages/Maps';
 import Chat from '../pages/Chat';
 import Contact from '../pages/Contacts';
-
-// class Hidden extends Component {
-//   render() {
-//     return null;
-//   }
-// }
-
-// const MainDrawer = createDrawerNavigator(
-//   {
-//     Maps: {screen: Maps},
-//     Chat: {
-//       screen: Chat,
-//       navigationOptions: {
-//         drawerLabel: <Hidden />,
-//       },
-//     },
-//     Contact: {screen: Contact},
-//     MyProfile: {screen: MyProfile},
-//     Profile: {screen: Profile, navigationOptions: {drawerLabel: <Hidden />}},
-//   },
-//   {
-//     initialRouteName: 'Maps',
-//     drawerPosition: 'left',
-//     drawerWidth: 200,
-//     drawerBackgroundColor: '#333333',
-//     contentOptions: {
-//       activeTintColor: '#ffffff',
-//       inactiveTintColor: '#000000',
-//       activeBackgroundColor: '#ff5500',
-//       inactiveBackgroundColor: '#ffffff',
-//       itemsContainerStyle: {
-//         marginTop: 20,
-//       },
-//       itemStyle: {
-//         marginTop: 10,
-//       },
-//       labelStyle: {
-//         fontSize: 16,
-//       },
-//       iconContainerStyle: {
-//         backgroundColor: '#000000',
-//       },
-//     },
-//   },
-// );
-
-// //
-// const AuthStack = createStackNavigator({
-//   Welcome: {
-//     screen: Landing,
-//     navigationOptions: ({navigation}) => ({header: null}),
-//   },
-//   Login: {screen: Login, navigationOptions: ({navigation}) => ({header: null})},
-//   Register: {
-//     screen: Register,
-//     navigationOptions: ({navigation}) => ({header: null}),
-//   },
-//   Home: {screen: MainDrawer},
-// });
-
-// const AppContainer = createAppContainer(
-//   createSwitchNavigator(
-//     {
-//       AuthLoading: Splash,
-//       App: MainDrawer,
-//       Auth: AuthStack,
-//     },
-//     {
-//       initialRouteName: 'AuthLoading',
-//     },
-//   ),
-// );
 
 const DrawerContent = props => {
   return (
@@ -126,36 +52,45 @@ const AppStack = createStackNavigator(
   {},
 );
 
-const ChatStack = createStackNavigator({
-  Friend: Contact,
-  Chat: Chat,
-});
-const HomeBottom = createDrawerNavigator(
+const ChatStack = createStackNavigator(
   {
-    Home: {
-      screen: AppStack,
-      navigationOptions: {
-        tabBarLabel: 'Home',
-      },
+    Friend: Contact,
+    FriendProfile: Profile,
+    Chat: Chat,
+  },
+  {
+    defaultNavigationOptions: {
+      header: null,
     },
+  },
+);
+
+const DrawerStack = createDrawerNavigator(
+  {
     ListChat: {
       screen: ChatStack,
       navigationOptions: {
-        tabBarLabel: 'Chat',
+        drawerLabel: 'Chat',
       },
     },
+    Home: {
+      screen: AppStack,
+      navigationOptions: {
+        drawerLabel: 'Find Friends',
+      },
+    },
+
     Profile: {
       screen: MyProfile,
       navigationOptions: {
-        tabBarLabel: 'Profile',
+        drawerLabel: 'Setting',
       },
     },
   },
   {
     contentComponent: DrawerContent,
-
-    tabBarOptions: {
-      activeTintColor: '#5ba4e5',
+    contentOptions: {
+      activeTintColor: '#f48023',
       inactiveTintColor: 'grey',
 
       style: {
@@ -169,30 +104,26 @@ const HomeBottom = createDrawerNavigator(
     },
   },
 );
-const AuthStack = createStackNavigator({
-  Landing: {screen: Landing},
-  Login: {
-    screen: Login,
-    navigationOptions: ({navigation}) => ({header: null}),
+const AuthStack = createStackNavigator(
+  {
+    Login: {
+      screen: Login,
+      navigationOptions: ({navigation}) => ({header: null}),
+    },
+    Register: {
+      screen: Register,
+      navigationOptions: ({navigation}) => ({header: null}),
+    },
   },
-  Register: {
-    screen: Register,
-    navigationOptions: ({navigation}) => ({header: null}),
+  {
+    initialRouteName: 'Login',
   },
-  Home: {
-    screen: HomeBottom,
-  },
-});
+);
 
 const AppRoot = createAppContainer(
   createSwitchNavigator(
+    {Splash: Splash, Landing: Landing, App: DrawerStack, Auth: AuthStack},
     {
-      Splash: Splash,
-      Auth: AuthStack,
-      App: HomeBottom,
-    },
-    {
-      initialRouteName: 'Splash',
       headerMode: 'none',
     },
   ),

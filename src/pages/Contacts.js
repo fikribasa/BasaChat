@@ -59,13 +59,13 @@ export default class Contact extends Component {
                   {item.name}
                 </Text>
                 {item.status == 'Online' ? (
-                  <Text style={styles.email}>{item.status}</Text>
+                  <Text style={styles.statusol}>{item.status}</Text>
                 ) : (
                   <Text style={styles.status}>{item.status}</Text>
                 )}
               </View>
               <View style={styles.msgContainer}>
-                <Text style={styles.status}>{item.email}</Text>
+                <Text style={styles.email}>{item.email}</Text>
               </View>
             </View>
           </View>
@@ -137,10 +137,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginLeft: 15,
   },
-  email: {
+  statusol: {
     fontWeight: '400',
-    color: '#008B8B',
+    color: '#f48023',
     fontSize: 12,
     marginLeft: 15,
+  },
+  email: {
+    fontWeight: '400',
+    color: '#f48023',
+    fontSize: 12,
   },
 });

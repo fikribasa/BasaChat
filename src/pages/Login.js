@@ -8,6 +8,8 @@ import {
   Platform,
   PermissionsAndroid,
   ToastAndroid,
+  StatusBar,
+  ImageBackground,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import Geolocation from 'react-native-geolocation-service';
@@ -19,22 +21,25 @@ export default class Login extends Component {
   };
   constructor(props) {
     super(props);
-
-    state = {
+    this._isMounted = false;
+    this.state = {
       email: '',
       password: '',
     };
   }
   componentDidMount = async () => {
+    this._isMounted = true;
     await this.getLocation();
   };
 
+  componentWillUnmount() {
+    this._isMounted = false;
+    Geolocation.clearWatch();
+    Geolocation.stopObserving();
+  }
+
   toRegister = () => {
     this.props.navigation.navigate('Register');
-  };
-
-  runaway = () => {
-    this.props.navigation.navigate('Home');
   };
 
   inputHandler = (name, value) => {
@@ -121,8 +126,8 @@ export default class Login extends Component {
         ToastAndroid.LONG,
       );
     } else {
-      Database.ref('/user')
-        .orderByChild('email')
+      Database.ref('user/')
+        .orderByChild('/email')
         .equalTo(email)
         .once('value', result => {
           let data = result.val();
@@ -145,7 +150,7 @@ export default class Login extends Component {
           await AsyncStorage.setItem('userid', response.user.uid);
           await AsyncStorage.setItem('user', response.user);
           ToastAndroid.show('Login success', ToastAndroid.LONG);
-          this.props.navigation.navigate('Home');
+          await this.props.navigation.navigate('App');
         })
         .catch(error => {
           this.setState({
@@ -171,71 +176,63 @@ export default class Login extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text
-          style={{
-            fontSize: 30,
-            textAlign: 'center',
-            color: '#091B37',
-            marginVertical: 10,
-            fontWeight: '900',
-          }}>
-          SIGN IN
-        </Text>
-        <View style={{alignItems: 'center'}}>
-          <TextInput
-            name="email"
-            placeholder="Email"
-            style={styles.textInput}
-            placeholderTextColor="grey"
-            onChangeText={this.handleChange('email')}
-          />
-          <TextInput
-            name="password"
-            placeholder="Password"
-            style={styles.textInput}
-            secureTextEntry={true}
-            placeholderTextColor="grey"
-            onChangeText={this.handleChange('password')}
-          />
-        </View>
-        <TouchableOpacity style={styles.signInBtn} onPress={this.submitForm}>
+        <StatusBar translucent backgroundColor="transparent" />
+        <ImageBackground
+          source={require('../assets/backgrund/landing.jpg')}
+          style={{resizeMode: 'cover', height: '100%', width: '100%'}}>
           <Text
             style={{
-              fontSize: 20,
+              fontSize: 30,
               textAlign: 'center',
-              fontWeight: 'bold',
               color: 'white',
+              marginTop: 170,
+              fontWeight: '900',
+              marginBottom: 30,
             }}>
             SIGN IN
           </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.signUpBtn}
-          onPress={() => this.props.navigation.navigate('Register')}>
-          <Text
-            style={{
-              fontSize: 20,
-              textAlign: 'center',
-              fontWeight: 'bold',
-              color: '#091B37',
-            }}>
-            SIGN UP
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.signUpBtn}
-          onPress={() => this.props.navigation.navigate('App')}>
-          <Text
-            style={{
-              fontSize: 20,
-              textAlign: 'center',
-              fontWeight: 'bold',
-              color: '#091B37',
-            }}>
-            Ruun
-          </Text>
-        </TouchableOpacity>
+          <View style={{alignItems: 'center'}}>
+            <TextInput
+              name="email"
+              placeholder="Email"
+              style={styles.textInput}
+              placeholderTextColor="grey"
+              onChangeText={this.handleChange('email')}
+            />
+            <TextInput
+              name="password"
+              placeholder="Password"
+              style={styles.textInput}
+              secureTextEntry={true}
+              placeholderTextColor="grey"
+              onChangeText={this.handleChange('password')}
+            />
+          </View>
+          <TouchableOpacity style={styles.signInBtn} onPress={this.submitForm}>
+            <Text
+              style={{
+                fontSize: 20,
+                textAlign: 'center',
+                fontWeight: 'bold',
+                color: 'white',
+              }}>
+              SIGN IN
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.signUpBtn}
+            onPress={() => this.props.navigation.navigate('Register')}>
+            <Text
+              style={{
+                fontSize: 20,
+                textAlign: 'center',
+                fontWeight: 'bold',
+                color: '#091B37',
+              }}>
+              SIGN UP
+            </Text>
+          </TouchableOpacity>
+        </ImageBackground>
       </View>
     );
   }

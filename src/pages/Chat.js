@@ -7,6 +7,7 @@ import firebase from 'firebase';
 import {GiftedChat} from 'react-native-gifted-chat';
 import {Database} from '../constant/config';
 import AsyncStorage from '@react-native-community/async-storage';
+import {Bubble} from 'react-native-gifted-chat';
 
 export default class Chat extends Component {
   static navigationOptions = ({navigation}) => {
@@ -27,7 +28,7 @@ export default class Chat extends Component {
     person: this.props.navigation.getParam('item'),
     userId: AsyncStorage.getItem('userid'),
     userName: AsyncStorage.getItem('user.name'),
-    userAvatar: AsyncStorage.getItem('user.phpto'),
+    userAvatar: AsyncStorage.getItem('user.photo'),
   };
 
   onSend = async () => {
@@ -89,10 +90,25 @@ export default class Chat extends Component {
         }));
       });
   };
+
+  renderBubble(props) {
+    return (
+      <Bubble
+        {...props}
+        wrapperStyle={{
+          right: {
+            backgroundColor: '#f48023',
+          },
+        }}
+      />
+    );
+  }
   render() {
     return (
-      <View style={{flex: 1, backgroundColor: '#FFCCBC'}}>
+      <View style={{flex: 1, backgroundColor: '#fae1e1'}}>
+        <Header />
         <GiftedChat
+          renderBubble={this.renderBubble}
           text={this.state.message}
           onInputTextChanged={val => {
             this.setState({message: val});
