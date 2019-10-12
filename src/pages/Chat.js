@@ -1,13 +1,19 @@
 import React, {Component} from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, Image} from 'react-native';
 import Header from '../layouts/Header';
 import {withNavigation} from 'react-navigation';
 import firebase from 'firebase';
-import {GiftedChat} from 'react-native-gifted-chat';
+import {
+  GiftedChat,
+  Actions,
+  SystemMessage,
+  Send,
+} from 'react-native-gifted-chat';
 import {Database} from '../constant/config';
 import AsyncStorage from '@react-native-community/async-storage';
-import {Bubble} from 'react-native-gifted-chat';
+import {Bubble, Composer} from 'react-native-gifted-chat';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default class Chat extends Component {
   static navigationOptions = ({navigation}) => {
@@ -103,11 +109,45 @@ export default class Chat extends Component {
       />
     );
   }
+
+  /// icon berganti saat input text
+  // renderSend = props => {
+  //   if (!props.text.trim()) {
+  //     // text box empty
+  //     return <Icon name="mic" color="#f48023" size={50} />;
+  //   }
+
+  //   return <Icon name="send" color="#f48023" size={50} />;
+  // };
+
+  renderSend(props) {
+    return (
+      <Send {...props}>
+        <View
+          style={{
+            marginRight: 30,
+            marginBottom: 25,
+
+            width: 35,
+            height: 35,
+          }}>
+          <Image
+            source={require('../assets/icon/send.png')}
+            resizeMode={'center'}
+            width={'40'}
+            height={'40'}
+          />
+        </View>
+      </Send>
+    );
+  }
+
   render() {
     return (
       <View style={{flex: 1, backgroundColor: '#fae1e1'}}>
         <Header />
         <GiftedChat
+          renderSend={this.renderSend}
           renderBubble={this.renderBubble}
           text={this.state.message}
           onInputTextChanged={val => {
